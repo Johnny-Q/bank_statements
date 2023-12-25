@@ -1,4 +1,5 @@
-statements
+data
+ignore
 .DS_Store
 *.csv
 *.pdf
