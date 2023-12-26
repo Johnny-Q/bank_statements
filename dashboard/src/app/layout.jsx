@@ -1,11 +1,15 @@
+import Provider from "@/components/Provider"
+
 const RootLayout = ({ children }) => {
     return (
         <html lang="en">
-            <body>
-                <main>
-                    {children}
-                </main>
-            </body>
+            <Provider>
+                <body>
+                    <main className="app">
+                        {children}
+                    </main>
+                </body>
+            </Provider>
         </html>
     )
 }
