@@ -1,13 +1,13 @@
+import { initGoogleAuth, initSpreadsheet } from "@/util/googleUtils";
 import GoogleProvider from "next-auth/providers/google"
+const {GOOGLE_ID, GOOGLE_SECRET} = process.env;
 
-const GOOGLE_ID = process.env.GOOGLE_ID;
-if (!GOOGLE_ID) {
-    throw new Error('Please define the GOOGLE_ID environment variable');
-}
-const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
-if (!GOOGLE_SECRET) {
-    throw new Error('Please define the GOOGLE_SECRET environment variable');
-}
+const scopes = [
+    "email",
+    "openid",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.file",
+]
 
 export const options = {
     providers: [
@@ -16,19 +16,23 @@ export const options = {
             clientSecret: GOOGLE_SECRET,
             authorization: {
                 params: {
-                    scope: 'https://www.googleapis.com/auth/spreadsheets email openid',
+                    scope: scopes.join(" "),
+                    prompt: "consent",
+                    // access_type: "offline",
+                    // response_type: "code",
                 }
             }
         }),
     ], callbacks: {
         async session(params) {
-            console.log("session", params);
+            // console.log("session", params);
             const { session, token } = params;
             session.access_token = token.access_token;
+            // session.refresh_token = token.refresh_token;
             return session;
         },
         async jwt(params) {
-            console.log("jwt", params);
+            // console.log("jwt", params);
             const { token, account } = params;
             if (account) {
                 token.access_token = account.access_token;
@@ -38,8 +42,16 @@ export const options = {
         async signIn(params) {
             console.log("signIn", params);
             const { account, profile } = params
-            //use could reject the option to allow google sheets, app needs to handle that
-            return true;
+            //next-auth handles rejection of oauth
+
+            //initialize app
+            try{
+                const auth = initGoogleAuth(account.access_token);
+                console.log(await initSpreadsheet(auth));
+                return true;
+            }catch(err){
+                return false;
+            }
         }
     }
 }
