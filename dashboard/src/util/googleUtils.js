@@ -10,14 +10,14 @@ export function initGoogleAuth(access_token) {
     });
     return auth;
 }
-export function initDrive(auth) {
+export function initDriveClient(auth) {
     return google.drive({
         version: "v3",
         auth: auth
     });
 }
 
-export function initSheets(auth) {
+export function initSheetsClient(auth) {
     return google.sheets({
         version: "v4",
         auth: auth
@@ -25,17 +25,17 @@ export function initSheets(auth) {
 }
 
 //could fail due to auth error
-export async function initSpreadsheet(auth) {
+export async function findOrCreateSpreadsheet(auth) {
     //find the sheet if it exists
-    const drive = initDrive(auth);
-    let sheetId = findSpreadsheet(drive);
+    const drive = initDriveClient(auth);
+    let sheetId = await findSpreadsheet(drive);
     if (sheetId != null) {
         return sheetId;
     }
 
     //create a sheet if it doesn't
-    const sheets = initSheets(auth);
-    return createSpreadsheet(sheets);
+    const sheets = initSheetsClient(auth);
+    return await createSpreadsheet(sheets);
 }
 
 //could fail due to auth error
@@ -55,8 +55,33 @@ export async function createSpreadsheet(sheets) {
     const response = await sheets.spreadsheets.create({
         resource: {
             properties: {
-                title: "Budget Tracker"
-            }
+                title: "Personal Budget Tracker"
+            }, 
+            sheets: [{
+                properties:{
+                    title: "Transactions"
+                },
+                data: {
+                    startRow: 0,
+                    startColumn: 0,
+                    rowData: [
+                         {
+                            values: [
+                                { userEnteredValue: { stringValue: "DATE"} },
+                                { userEnteredValue: { stringValue: "BANK DESCRIPTION"} },
+                                { userEnteredValue: { stringValue: "DESCRIPTION"} },
+                                { userEnteredValue: { stringValue: "AMOUNT"} },
+                                { userEnteredValue: { stringValue: "CATEGORY"} },
+                                { userEnteredValue: { stringValue: "ACCOUNT"} },
+                            ]
+                         }
+                    ]
+                }
+            }, {
+                properties:{
+                    title: "Categories"
+                }
+            }],
         }
     });
     return response.data.spreadsheetId;
