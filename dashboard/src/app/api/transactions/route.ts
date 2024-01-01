@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { options } from "../auth/[...nextauth]/options";
 import SheetsClient from "@/util/SheetsClient";
+import { validateTransactions } from "@/util/dataValidators";
 /* body format
 {
     source: "user" | "bank",
@@ -19,9 +20,7 @@ export async function POST(req: Request) {
     }
     const { access_token, spreadsheet_id } = session;
 
-    const transactions = await req.json();
-
-    //validate the transactions
+    const transactions = validateTransactions(await req.json()); //update this to include options for the api call (i.e. source)
 
     const sheets_client = new SheetsClient(access_token as string, spreadsheet_id as string);
     try {
@@ -48,24 +47,4 @@ export async function GET(req: Request) {
         console.log(err);
         return Response.json("server error", { status: 500 });
     }
-}
-
-function validateTranscations(transactions: any[]) {
-    transactions.forEach(transaction => {
-        validateTransaction(transaction);
-    });
-}
-function validateTransaction(transaction: any) {
-    if (transaction.length != 6) return false;
-    //check date is valid format
-
-    //check bank_description is a string
-
-    //check description is a string
-
-    //check amount is a valid number format
-
-    //check category is a string
-
-    //check account is a string
 }

@@ -6,7 +6,7 @@ const TestPage = () => {
     const [txn, setTxn] = useState({
         "date": "",
         "bank_desc": "",
-        "desc": "",
+        "description": "",
         "amount": "",
         "category": "",
         "account": ""
@@ -26,8 +26,8 @@ const TestPage = () => {
                 <input type="text" placeholder="bank_desc" value={txn.bank_desc || ""} onChange={(e) => {
                     setTxn({ ...txn, bank_desc: e.target.value });
                 }} />
-                <input type="text" placeholder="desc" value={txn.desc || ""} onChange={(e) => {
-                    setTxn({ ...txn, desc: e.target.value });
+                <input type="text" placeholder="desc" value={txn.description || ""} onChange={(e) => {
+                    setTxn({ ...txn, description: e.target.value });
                 }} />
                 <input type="text" placeholder="amount" value={txn.amount || ""} onChange={(e) => {
                     setTxn({ ...txn, amount: e.target.value });

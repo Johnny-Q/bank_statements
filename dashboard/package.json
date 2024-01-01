@@ -1,5 +1,5 @@
 {
-  "name": "dashboard-ts",
+  "name": "dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,8 @@
     "next-auth": "^4.24.5",
     "papaparse": "^5.4.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",
