@@ -1,6 +1,6 @@
 'use client';
 import { useState } from "react";
-const ApiButton = ({ text, apiFunc }) => {
+const ApiButton = ({ text, apiFunc }: { text: string, apiFunc: () => Promise<any> }) => {
   const [apiResponse, setApiResponse] = useState({});
   return (
     <div>

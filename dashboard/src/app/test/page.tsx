@@ -1,8 +1,16 @@
 'use client';
 import { useState, useEffect } from "react";
 import ApiButton from "../../components/ApiButton";
+import CsvParser from "@/components/CsvParser";
 const TestPage = () => {
-    const [txn, setTxn] = useState({});
+    const [txn, setTxn] = useState({
+        "date": "",
+        "bank_desc": "",
+        "desc": "",
+        "amount": "",
+        "category": "",
+        "account": ""
+    });
     return (
         <div>
             <ApiButton text="Get Spreadsheet Data" apiFunc={async () => {
@@ -41,6 +49,7 @@ const TestPage = () => {
                 })
                 return await resp.json();
             }} />
+            <CsvParser />
         </div>
     )
 }
