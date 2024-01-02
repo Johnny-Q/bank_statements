@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { options } from "../auth/[...nextauth]/options";
-import SheetsClient from "@/util/SheetsClient";
-import { validateTransactions } from "@/util/dataValidators";
+import SheetsClient from "@/utils/SheetsClient";
+import { validateTransactions } from "@/utils/transactionValidator";
 /* body format
 {
     source: "user" | "bank",

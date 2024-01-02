@@ -1,4 +1,4 @@
-import { findSpreadsheet, initGoogleAuth, initSheetsClient, initDriveClient, findOrCreateSpreadsheet } from "@/util/googleUtils";
+import { findSpreadsheet, initGoogleAuth, initSheetsClient, initDriveClient, findOrCreateSpreadsheet } from "@/utils/googleUtils";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google"
 const { GOOGLE_ID, GOOGLE_SECRET } = process.env;
