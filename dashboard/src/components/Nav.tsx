@@ -1,7 +1,7 @@
 import Link from "next/link"
 const Nav = () => {
   return (
-    <nav className="flex flex-col">
+    <nav className="grid-col-start-1 col-span-1 h-full flex flex-col">
       <Link href="/test">
         Dashboard
       </Link>
