@@ -28,7 +28,14 @@ export default class SheetsClient {
             range: "A1:Z",
             valueInputOption: 'USER_ENTERED',
             requestBody: {
-                values: transactions.map(transaction => Object.values(transaction))
+                values: transactions.map(transaction => [
+                    transaction.date || "",
+                    transaction.bank_description || "",
+                    transaction.description || "",
+                    transaction.amount || "",
+                    transaction.category || "",
+                    transaction.account || "",
+                ])
             },
         })
     }
