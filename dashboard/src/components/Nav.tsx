@@ -1,15 +1,15 @@
 import Link from "next/link"
 const Nav = () => {
   return (
-    <nav>
-      <Link href="/api/auth/signout">
-        Sign Out
-      </Link>
-      <Link href="/api/auth/signin">
-        Sign In
-      </Link>
+    <nav className="flex flex-col">
       <Link href="/test">
-        Test Page
+        Dashboard
+      </Link>
+      <Link href="/add-transaction">
+        Add Transaction
+      </Link>
+      <Link href="/upload-transactions">
+        Upload CSV
       </Link>
     </nav>
   )
