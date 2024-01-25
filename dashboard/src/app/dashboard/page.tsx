@@ -20,12 +20,12 @@ const DashboardPage = async () => {
         <div className="w-full px-5">
             <section className="my-5">
                 <h1 className="text-xl">You've Spent</h1>
-                <h1 className="text-6xl">${Math.abs(total_spending.toFixed(2))}</h1>
+                <h1 className="text-6xl">${Math.abs(total_spending).toFixed(2)}</h1>
                 <div>
                     <Progress value={total_spending / MAX_SPENDINGS * 100} className="h-3 w-full" />
                     <div className="w-full flex flex-row justify-between">
                         <p>$0</p>
-                        <p>$500</p>
+                        <p>${MAX_SPENDINGS.toFixed(2)}</p>
                     </div>
                 </div>
             </section>
