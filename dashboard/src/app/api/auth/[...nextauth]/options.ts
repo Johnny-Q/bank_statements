@@ -11,6 +11,9 @@ const scopes = [
 ]
 
 export const options: NextAuthOptions = {
+    session: {
+        maxAge: 60 * 60 //match the time of the tokens from google
+    },
     providers: [
         GoogleProvider({
             clientId: GOOGLE_ID as string,
@@ -34,11 +37,13 @@ export const options: NextAuthOptions = {
             console.log("jwt", params);
             const { token, account } = params;
             if (account && account.access_token) {
-                token.access_token = account.access_token;
-                token.expire_at = account.expire_at; //handle token refresh
+                //token.expire_at = account.expire_at; //handle token refresh
                 const auth = initGoogleAuth(account.access_token);
                 const drive = initDriveClient(auth);
+
+                //put these on the token so we can put it onto session afterwards
                 token.spreadsheet_id = await findSpreadsheet(drive);
+                token.access_token = account.access_token;
             }
             return token;
         },
