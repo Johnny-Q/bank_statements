@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Transaction } from "@/utils/transactionValidator"
+import { Transaction } from "@/utils/TransactionsValidator"
 import { DataTable } from "./DataTable"
 import { Checkbox } from "./ui/checkbox"
 

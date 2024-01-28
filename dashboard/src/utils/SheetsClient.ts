@@ -1,6 +1,7 @@
 import { OAuth2Client } from "google-auth-library";
 import { google, sheets_v4 } from "googleapis";
 import { extractDataFromQueryResponse, initGoogleAuth, initSheetsClient } from "./googleUtils";
+import { Transaction } from "./TransactionsValidator";
 export default class SheetsClient {
     private auth: OAuth2Client;
     private sheets: sheets_v4.Sheets;
@@ -36,8 +37,7 @@ export default class SheetsClient {
     /* 
     compares given transactions with the ones already in the sheet
     */
-    async compareTransactions(transactions: any[]): Promise<any[]> {
-
+    async compareTransactions(transactions: Transaction[]): Promise<Transaction[]> {
         //sort the transactions by date
         transactions.sort((a: any, b: any) => {
             if (a["date"] > b["date"]) return -1;
@@ -85,7 +85,7 @@ export default class SheetsClient {
         return new_transactions;
     }
 
-    async appendTransactions(transactions: any[]): Promise<void> {
+    async appendTransactions(transactions: any[]) {
         const res = await this.sheets.spreadsheets.values.append({
             spreadsheetId: this.spreadsheet_id,
             range: "A1:Z",
@@ -103,7 +103,7 @@ export default class SheetsClient {
         })
     }
 
-    async getTransactions(options?: { start_date?: Date, end_date?: Date, limit?: number }) {
+    async getTransactions(options?: { start_date?: Date, end_date?: Date, limit?: number }): Promise<Transaction[]> {
         let query = "select *"
         if (options?.start_date && options?.end_date) {
             // Both dates are provided
@@ -141,7 +141,7 @@ export default class SheetsClient {
         return transactions;
     }
 
-    async getTotalSpending(options?: { startDate?: Date, endDate?: Date }) {
+    async getTotalSpending(options?: { startDate?: Date, endDate?: Date }): Promise<number> {
         let query = "select sum(D)";
 
         if (options?.startDate && options?.endDate) {
@@ -190,7 +190,7 @@ export default class SheetsClient {
         return spendingByCategory;
     }
 
-    async query(query: string): Promise<any> {
+    async query(query: string): Promise<any[]> {
         const url = "https://docs.google.com/spreadsheets" +
             `/d/${this.spreadsheet_id}/gviz/tq` +
             `?tq=${encodeURIComponent(query)}` +
@@ -209,7 +209,7 @@ export default class SheetsClient {
             console.log(`Query received error response: ${JSON.stringify(jsonData.errors)}`);
             throw `Query received error response`;
         }
-        
+
         const tableData = jsonData.table;
         const columns = tableData.cols.map((col: any) => col.label);
 

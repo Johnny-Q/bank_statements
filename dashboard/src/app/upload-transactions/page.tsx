@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import { Input } from "@/components/ui/input";
-import { validateTransactions } from "@/utils/transactionValidator";
+import { validateTransactions } from "@/utils/TransactionsValidator";
 import TransactionsTable from "@/components/TransactionsTable";
 import { Button } from "@/components/ui/button";
 
@@ -37,7 +37,7 @@ const UploadCsv = () => {
   }, transactions)
 
   return (
-    <>
+    <div className="w-full h-full">
       <Input type="file" onChange={parseCsv} />
       {transactions && (
         <>
@@ -45,7 +45,7 @@ const UploadCsv = () => {
           <Button className="w-full" onClick={uploadData}>Upload</Button>
         </>
       )}
-    </>
+    </div>
   )
 }
 

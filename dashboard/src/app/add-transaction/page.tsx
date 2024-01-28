@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { format } from "date-fns"
-import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,18 +16,20 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { transactionSchema } from "@/utils/transactionValidator"
-import type { Transaction } from "@/utils/transactionValidator"
+import { TransactionFormSchema } from "@/utils/TransactionsValidator"
+import type { TransactionForm } from "@/utils/TransactionsValidator"
 
-const TransactionForm = () => {
-  const form = useForm<Transaction>({
-    resolver: zodResolver(transactionSchema),
+const AddTransactionForm = () => {
+  const form = useForm<TransactionForm>({
+    resolver: zodResolver(TransactionFormSchema),
     defaultValues: {
-      date: format(new Date, "yyyy/MM/dd")
+      date: format(new Date, "yyyy-MM-dd"),
+      amount: "",
+      description: ""
     }
-  })
+  });
 
-  function onSubmit(values: Transaction) {
+  function onSubmit(values: TransactionForm) {
     // Do something with the form values.
     //show errors and 
     fetch("/api/transactions", {
@@ -39,6 +40,7 @@ const TransactionForm = () => {
       body: JSON.stringify([values])
     }).then(resp => {
       //TODO: handle response
+      form.reset();
     }).catch(resp => {
       //TODO: handle error
     });
@@ -55,7 +57,7 @@ const TransactionForm = () => {
                 <FormLabel>Date</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="YYYY/MM/DD"
+                    placeholder="YYYY-MM-DD"
                     {...field}
                   />
                 </FormControl>
@@ -76,7 +78,7 @@ const TransactionForm = () => {
                   />
                 </FormControl>
                 <FormDescription>
-                  Add "+" to amount if you've received money (e.g. +1.00)
+                  Add "-" to amount if you've spent money (e.g. -1.00)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -98,11 +100,10 @@ const TransactionForm = () => {
               </FormItem>
             )}
           />
-
           <Button className="w-full" type="submit">Submit</Button>
         </form>
-      </Form>
-    </div>
+      </Form >
+    </div >
   )
 }
-export default TransactionForm;
+export default AddTransactionForm;
