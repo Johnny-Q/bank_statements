@@ -1,4 +1,4 @@
-import { OAuth2Client } from "google-auth-library";
+import type { OAuth2Client } from "google-auth-library";
 import type { drive_v3, sheets_v4 } from "googleapis";
 import { google } from "googleapis"
 const { GOOGLE_ID, GOOGLE_SECRET } = process.env;
@@ -63,6 +63,27 @@ export async function findSpreadsheet(drive: drive_v3.Drive): Promise<string | n
 }
 
 export async function createSpreadsheet(sheets: sheets_v4.Sheets) {
+
+    const header_format = {
+        backgroundColorStyle: {
+            rgbColor: {
+                red: 60 / 255,
+                green: 120 / 255,
+                blue: 216 / 255
+            }
+        },
+        textFormat: {
+            foregroundColorStyle: {
+                rgbColor: {
+                    red: 1,
+                    green: 1,
+                    blue: 1
+                },
+            }
+        },
+        horizontalAlignment: "CENTER",
+        verticalAlignment: "MIDDLE",
+    }
     const response = await sheets.spreadsheets.create({
         requestBody: {
             properties: {
@@ -70,7 +91,10 @@ export async function createSpreadsheet(sheets: sheets_v4.Sheets) {
             },
             sheets: [{
                 properties: {
-                    title: "Transactions"
+                    title: "Transactions",
+                    gridProperties: {
+                        frozenRowCount: 1
+                    }
                 },
                 data: [{
                     startRow: 0,
@@ -78,16 +102,21 @@ export async function createSpreadsheet(sheets: sheets_v4.Sheets) {
                     rowData: [
                         {
                             values: [
-                                { userEnteredValue: { stringValue: "DATE" } },
-                                { userEnteredValue: { stringValue: "BANK DESCRIPTION" } },
-                                { userEnteredValue: { stringValue: "DESCRIPTION" } },
-                                { userEnteredValue: { stringValue: "AMOUNT" } },
-                                { userEnteredValue: { stringValue: "CATEGORY" } },
-                                { userEnteredValue: { stringValue: "ACCOUNT" } },
+                                { userEnteredValue: { stringValue: "DATE" }, userEnteredFormat: header_format },
+                                { userEnteredValue: { stringValue: "BANK DESCRIPTION" }, userEnteredFormat: header_format },
+                                { userEnteredValue: { stringValue: "DESCRIPTION" }, userEnteredFormat: header_format },
+                                { userEnteredValue: { stringValue: "AMOUNT" }, userEnteredFormat: header_format },
+                                { userEnteredValue: { stringValue: "CATEGORY" }, userEnteredFormat: header_format },
+                                { userEnteredValue: { stringValue: "ACCOUNT" }, userEnteredFormat: header_format },
                             ]
                         }
-                    ]
-                }]
+                    ],
+                    rowMetadata: [{ pixelSize: 35 }]
+                }, {
+                    startRow: 0,
+                    startColumn: 1,
+                    columnMetadata: [{ pixelSize: 7 }]
+                }],
             }, {
                 properties: {
                     title: "Categories"
@@ -95,5 +124,19 @@ export async function createSpreadsheet(sheets: sheets_v4.Sheets) {
             }],
         }
     });
+    console.log(response.data);
     return response.data.spreadsheetId;
+}
+
+export function extractDataFromQueryResponse(text: string): any {
+    // Find the JSON object in the text
+    const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+
+    if (!jsonMatch || jsonMatch.length < 2) {
+        throw new Error("No valid JSON data found in the text");
+    }
+
+    // Parse the JSON data
+    const jsonData = JSON.parse(jsonMatch[1]);
+    return jsonData;
 }
