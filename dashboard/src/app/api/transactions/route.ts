@@ -1,30 +1,18 @@
 import { getServerSession } from "next-auth/next";
 import { options } from "../auth/[...nextauth]/options";
 import SheetsClient from "@/utils/SheetsClient";
-import { validateTransactions } from "@/utils/transactionValidator";
-/* body format
-{
-    source: "user" | "bank",
-    data: [
-        {
-            ""
-        }
-    ]
-}
-*/
+import { validateUserTransactions } from "@/utils/TransactionsValidator";
+import { Session } from "next-auth";
+
 export async function POST(req: Request) {
-    const session = await getServerSession(options);
-    if (!session) {
-        //handle not logged in 
-        return Response.json("Not Authorized", { status: 401 });
-    }
+    const session = await getServerSession(options) as Session;
     const { access_token, spreadsheet_id } = session;
-
-    const transactions = validateTransactions(await req.json()); //update this to include options for the api call (i.e. source)
-
+    const transactions = validateUserTransactions(await req.json());
     const sheets_client = new SheetsClient(access_token as string, spreadsheet_id as string);
     try {
-        await sheets_client.appendTransactions(transactions);
+        // await sheets_client.appendTransactions(transactions);
+        const new_transctions = await sheets_client.compareTransactions(transactions);
+        await sheets_client.appendTransactions(new_transctions);
         return Response.json("done");
     } catch (err) {
         console.log(err);
@@ -33,11 +21,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-    const session = await getServerSession(options);
-    if (!session) {
-        //handle not logged in 
-        return Response.json("Not Authorized", { status: 401 });
-    }
+    const session = await getServerSession(options) as Session;
     const { access_token, spreadsheet_id } = session;
     const sheets_client = new SheetsClient(access_token as string, spreadsheet_id as string);
     try {
