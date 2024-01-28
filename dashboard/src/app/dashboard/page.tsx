@@ -1,7 +1,7 @@
 import TransactionsTable from "@/components/TransactionsTable";
 import { Progress } from "@/components/ui/progress";
 import { useSheetsClient } from "@/utils/hooks";
-import { Transaction } from "@/utils/transactionValidator";
+import { UserInputtedTransaction } from "@/utils/TransactionsValidator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 
@@ -15,7 +15,7 @@ const DashboardPage = async () => {
     const MAX_SPENDINGS = 500;
 
     //run this first to check if there is any data in the spreadsheet (no data will cause problems for other queries)
-    let recent_transactions: Transaction[] = [];
+    let recent_transactions: UserInputtedTransaction[] = [];
     let total_spending = 0;
     let spending_by_category = {}
     let error = true;
@@ -23,7 +23,7 @@ const DashboardPage = async () => {
         recent_transactions = await sheets.getTransactions({ limit: 5 });
         if (recent_transactions.length > 0) { //these queries only work if the user has already added some data to the spreadsheet
             spending_by_category = await sheets.getCategorySpending({ startDate: start_date, endDate: end_date });
-            total_spending = 0; Math.abs(await sheets.getTotalSpending({ startDate: start_date, endDate: end_date }));
+            total_spending = Math.abs(await sheets.getTotalSpending({ startDate: start_date, endDate: end_date }));
         }
         error = false;
     } catch (err) {
@@ -37,11 +37,11 @@ const DashboardPage = async () => {
 
 
     return (
-        <div className="w-full px-5">
+        <div className="w-full h-full px-5">
             {error &&
                 (<Alert variant="destructive">
                     <AlertDescription>
-                        Error loading transactions.
+                        Error loading transactions. Did you edit the spreadsheet?
                     </AlertDescription>
                 </Alert>)
             }
@@ -63,17 +63,6 @@ const DashboardPage = async () => {
                     <TransactionsTable transactions={recent_transactions} />
                 </div>
             </section>
-
-            {/* <section className="my-5">
-                <h1 className="text-xl">Spendings by category</h1>
-                <div>
-                    {Object.entries(spending_by_category).map((entry, index) => {
-                        return (
-                            <CategoryOverviewCard />
-                        )
-                    })}
-                </div>
-            </section> */}
         </div>
     )
 }
