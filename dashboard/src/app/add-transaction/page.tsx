@@ -78,7 +78,7 @@ const AddTransactionForm = () => {
                   />
                 </FormControl>
                 <FormDescription>
-                  Add "-" to amount if you've spent money (e.g. -1.00)
+                  Add &quot;-&quot; to amount if you&apos;ve spent money (e.g. -1.00)
                 </FormDescription>
                 <FormMessage />
               </FormItem>

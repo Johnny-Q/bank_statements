@@ -32,10 +32,6 @@ const UploadCsv = () => {
     })
   }
 
-  useEffect(() => {
-    console.log(transactions);
-  }, transactions)
-
   return (
     <div className="w-full h-full">
       <Input type="file" onChange={parseCsv} />

@@ -46,7 +46,7 @@ const DashboardPage = async () => {
                 </Alert>)
             }
             <section className="my-5">
-                <h1 className="text-xl">This month, you've spent</h1>
+                <h1 className="text-xl">This month, you&apos;ve spent</h1>
                 <h1 className="text-6xl">${total_spending.toFixed(2)}</h1>
                 <div>
                     <Progress value={total_spending / MAX_SPENDINGS * 100} className="h-3 w-full" />
