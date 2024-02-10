@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <html lang="en">
-            <body className="h-screen grid grid-cols-[200px_1fr]">
+            <body className="h-screen grid grid-cols-[48px_1fr] md:grid-cols-[200px_1fr] ">
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="dark"
